@@ -1,0 +1,24 @@
+<% include ./partials/header.ejs %>
+<div class="bg-zinc-700 text-white w-full h-screen p-8 flex items-center justify-center">
+    <div class="container w-4/5 h-4/5 bg-white rounded-lg p-6 flex">
+        <!-- Image Section -->
+        <div class="w-1/2 h-full bg-sky-200 rounded-lg overflow-hidden">
+            <img class="w-full h-full object-cover" src="/images/uploads/<%= user.posts[0].image %>" alt="">
+        </div>
+        
+        <!-- Text Section -->
+        <div class="w-1/2 h-full p-6 text-gray-900 flex flex-col justify-center">
+            <div class="text-xl">
+                <h2>
+                    <span class="font-semibold">Title:</span> <%= user.posts[0].title %>
+                </h2>
+            </div>
+            <div class="text-xl mt-3">
+                <h2>
+                    <span class="font-semibold">Description:</span> <%= user.posts[0].description %>
+                </h2>
+            </div>
+        </div>
+    </div>
+</div>
+<% include ./partials/footer.ejs %>
