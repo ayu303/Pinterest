@@ -1,8 +1,8 @@
 const mongoose=require('mongoose');
 const plm=require("passport-local-mongoose");
-require('dotenv').config(); // Load environment variables from .env file
+//require('dotenv').config(); // Load environment variables from .env file
 
-mongoose.connect(process.env.MONGODB_URI);
+mongoose.connect("mongodb://127.0.0.1:27017/pin");
 
 const userSchema = mongoose.Schema(
   {
