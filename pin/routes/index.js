@@ -19,7 +19,7 @@ router.get('/add',isLoggedIn, async function(req, res, next) {
   res.render('add',{user,navb:true});
 });
 router.get('/profile',isLoggedIn, async function(req, res, next) {
-  const user = await userModel.findOne({username: req.session.passport.user}).populate("posts").populate("username").populate("name");
+  const user = await userModel.findOne({username: req.session.passport.user}).populate("posts");
   console.log(user);
  
   res.render('profile',{user,navb:true});
@@ -33,25 +33,28 @@ router.get('/feed',isLoggedIn, async function(req, res, next) {
 });
 router.get('/all/posts',isLoggedIn, async function(req, res, next) {
   const user = await userModel.findOne({username: req.session.passport.user}).populate("posts");
+  const posts = await postModel.find().populate("user");
   console.log(user); 
 
-  res.render('allposts',{user,navb:true});
+  res.render('allposts',{user,posts,navb:true});
 });
-// router.get('/fullimage/:postId', isLoggedIn, async function(req, res, next) {
-//   const postId = req.params.postId;
-//   const user = await userModel.findOne({ username: req.session.passport.user }).populate("posts");
-//   const post = await user.posts.find(post => post._id.toString() === postId);
-//   if (!post) {
-//     return res.status(404).send('Post not found');
-//   }
-//   res.render('full', { post, navb: true });
+router.get('/fullimage/:postId', isLoggedIn, async function(req, res, next) {
+  const postId = req.params.postId;
+  const post = await postModel.findById(postId).populate("user");
+  if (!post) {
+    return res.status(404).send('Post not found');
+  }
+  res.render('full', { post, navb: true });
+});
+// router.get('/fullimage',isLoggedIn, async function(req, res, next) {
+//   const user = await userModel.findOne({username: req.session.passport.user}).populate("posts");
+//   const post = await postModel.findOne({title:req.session.passport.post}).populate("user");
+//   console.log(user); 
+//   console.log(post); 
+
+
+//   res.render('full',{user,post,navb:true});
 // });
-router.get('/fullimage',isLoggedIn, async function(req, res, next) {
-  const user = await userModel.findOne({username: req.session.passport.user}).populate("posts");
-  console.log(user); 
-
-  res.render('full',{user,navb:true});
-});
 router.post('/createpost',isLoggedIn,upload.single("postimage"), async function(req, res, next) {
   const user = await userModel.findOne({username: req.session.passport.user});
   const post = await postModel.create(
