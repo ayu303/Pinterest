@@ -66,6 +66,7 @@ router.post('/forgot-password', (req, res) => {
   }
   // Check if the email exists in the database
   User.findOne({ email: email }, (err, user) => {
+    
     if (err) {
       return res.status(500).send({ message: 'Error occurred while checking email' });
     }
