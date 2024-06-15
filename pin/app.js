@@ -4,7 +4,7 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 const expressSession = require('express-session');
-const MongoStore = require('connect-mongo');
+//const MongoStore = require('connect-mongo');
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 const passport = require('passport');
@@ -19,7 +19,7 @@ app.use(expressSession({
   resave:false,
   saveUninitialized:false,
   secret:"my secret",
-  store: MongoStore.create({ mongoUrl: process.env.MONGODB_URI })
+ // store: MongoStore.create({ mongoUrl: process.env.MONGODB_URI })
 }))
 app.use(passport.initialize());
 app.use(passport.session());
