@@ -55,6 +55,29 @@ router.get('/fullimage/:postId', isLoggedIn, async function(req, res, next) {
 
 //   res.render('full',{user,post,navb:true});
 // });
+router.get('/forgot-password',(req,res)=>{
+  res.render('forgot-password',{navb:false});
+})
+router.post('/forgot-password', (req, res) => {
+  const email = req.body.email;
+  // Validate the email address
+  if (!email) {
+    return res.status(400).send({ message: 'Email is required' });
+  }
+  // Check if the email exists in the database
+  User.findOne({ email: email }, (err, user) => {
+    if (err) {
+      return res.status(500).send({ message: 'Error occurred while checking email' });
+    }
+    if (!user) {
+      return res.status(404).send({ message: 'Email not found' });
+    }
+    // Generate a token and send it to the user's email
+    const token = generateToken(user);
+    sendResetPasswordEmail(user, token);
+    res.send({ message: 'Password reset link sent to your email' });
+  });
+});
 router.post('/createpost',isLoggedIn,upload.single("postimage"), async function(req, res, next) {
   const user = await userModel.findOne({username: req.session.passport.user});
   const post = await postModel.create(
