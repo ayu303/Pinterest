@@ -108,7 +108,7 @@ router.post('/createpost', isLoggedIn, upload.single("postimage"), async functio
     await user.save();
 
     // Delete the local file if not needed anymore
-    fs.unlinkSync(localFilePath);
+   // fs.unlinkSync(localFilePath);
 
     res.redirect('/profile');
   });
