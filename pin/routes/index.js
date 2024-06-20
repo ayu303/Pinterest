@@ -5,6 +5,7 @@ const postModel =require("./posts");
 const passport = require('passport');
 const localStrategy=require("passport-local");
 const upload = require('./multer');
+const cloudinary = require("./cloudinary");
 passport.use(new localStrategy(userModel.authenticate()));
 /* GET home page. */
 router.get('/', function(req, res, next) {
@@ -95,6 +96,21 @@ router.post('/createpost',isLoggedIn,upload.single("postimage"), async function(
  
 });
 router.post('/fileupload',isLoggedIn,upload.single("image"), async function(req, res, next) {
+  cloudinary.uploader.upload(req.file.path, function (err, result){
+    if(err) {
+      console.log(err);
+      return res.status(500).json({
+        success: false,
+        message: "Error"
+      })
+    }
+
+    res.status(200).json({
+      success: true,
+      message:"Uploaded!",
+      data: result
+    })
+  })
   const user = await userModel.findOne({username: req.session.passport.user});
   user.profileImage = req.file.filename;
   await user.save();
