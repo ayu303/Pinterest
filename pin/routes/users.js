@@ -14,6 +14,7 @@ const userSchema = mongoose.Schema(
     email:String,
     contact:Number,
     profileImage:String,
+    cloudinaryProfileImage: String, // Cloudinary URL
     boards:[],
     posts:[
       {

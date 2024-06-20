@@ -8,7 +8,7 @@
            
         <div class="card w-32">
             <div class="w-full h-40 bg-sky-200 rounded-lg overflow-hidden ">
-                <img class="w-full h-full object-cover"src="/images/uploads/<%= ele.image %>" alt="">
+                <img class="w-full h-full object-cover" src="<%= ele.cloudinary_url ? ele.cloudinary_url : '/images/uploads/' + ele.image %>" alt="">
             </div>
             <h5 class="text-sm mt-2">
                 <%=ele.title %> 

@@ -138,6 +138,7 @@ router.post('/fileupload', isLoggedIn, upload.single("image"), async function (r
     res.redirect('/profile');
   });
 });
+
 router.get('/logout',isLoggedIn,function(req,res,next){
   req.logout(function(err) {
     if (err) { return next(err); }

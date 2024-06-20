@@ -3,7 +3,7 @@
     <div class="container w-4/5 h-4/5 bg-white rounded-lg p-6 flex">
         <!-- Image Section -->
         <div class="w-1/2 h-full bg-sky-200 rounded-lg overflow-hidden">
-            <img class="w-full h-full object-cover" src="/images/uploads/<%= post.image %>" alt="">
+            <img class="w-full h-full object-cover" src="<%= post.cloudinary_url ? post.cloudinary_url : '/images/uploads/' + post.image %>" alt="">
         </div>
         
         <!-- Text Section -->

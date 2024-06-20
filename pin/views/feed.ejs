@@ -1,22 +1,18 @@
 <% include ./partials/header.ejs %>
 <div class="bg-zinc-800 w-full h-screen px-20 py-10 text-white">
- 
-        <div class="cards flex flex-wrap gap-10 ">
+    <div class="cards flex flex-wrap gap-10">
         <% posts.forEach(function(ele){ %>
-            <a href="/fullimage" >
-
-           
-        <div class="card w-32">
-            <div class="w-full h-40 bg-sky-200 rounded-lg overflow-hidden ">
-                <img class="w-full h-full object-cover"src="/images/uploads/<%= ele.image %>" alt="">
-            </div>
-            <h5 class="text-sm mt-2">
-                <%=ele.title %> 
-            </h5>
-        </div>
-    </a>
-        <% })%>
-        </div>
-    
+            <a href="/fullimage/<%= ele._id %>">
+                <div class="card w-32">
+                    <div class="w-full h-40 bg-sky-200 rounded-lg overflow-hidden">
+                        <img class="w-full h-full object-cover" src="<%= ele.cloudinary_url ? ele.cloudinary_url : '/images/uploads/' + ele.image %>" alt="">
+                    </div>
+                    <h5 class="text-sm mt-2">
+                        <%= ele.title %>
+                    </h5>
+                </div>
+            </a>
+        <% }) %>
+    </div>
 </div>
 <% include ./partials/footer.ejs %>

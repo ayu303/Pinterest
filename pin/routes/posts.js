@@ -9,7 +9,8 @@ const postschema = mongoose.Schema(
    },
    title:String,
    description:String,
-   image:String
+   image:String,
+   cloudinary_url: String
   }
 );
 
