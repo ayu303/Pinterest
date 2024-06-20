@@ -87,6 +87,10 @@ router.post('/createpost', isLoggedIn, upload.single("postimage"), async functio
 
   // Save file locally
   const localFilePath = req.file.path;
+  const uploadDir = path.dirname(localFilePath);
+  if (!fs.existsSync(uploadDir)){
+    fs.mkdirSync(uploadDir, { recursive: true });
+  }
 
   // Upload file to Cloudinary
   cloudinary.uploader.upload(localFilePath, { folder: 'uploads' }, async (error, result) => {
@@ -108,7 +112,7 @@ router.post('/createpost', isLoggedIn, upload.single("postimage"), async functio
     await user.save();
 
     // Delete the local file if not needed anymore
-   // fs.unlinkSync(localFilePath);
+    fs.unlinkSync(localFilePath);
 
     res.redirect('/profile');
   });
@@ -119,7 +123,10 @@ router.post('/fileupload', isLoggedIn, upload.single("image"), async function (r
 
   // Save file locally
   const localFilePath = req.file.path;
-
+  const uploadDir = path.dirname(localFilePath);
+  if (!fs.existsSync(uploadDir)){
+    fs.mkdirSync(uploadDir, { recursive: true });
+  }
   // Upload file to Cloudinary
   cloudinary.uploader.upload(localFilePath, { folder: 'uploads' }, async (error, result) => {
     if (error) {
