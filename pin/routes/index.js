@@ -5,7 +5,8 @@ const postModel =require("./posts");
 const passport = require('passport');
 const localStrategy=require("passport-local");
 const upload = require('./multer');
-const cloudinary = require("./cloudinary");
+const cloudinary = require('./cloudinary');
+const fs = require('fs');
 passport.use(new localStrategy(userModel.authenticate()));
 /* GET home page. */
 router.get('/', function(req, res, next) {
@@ -80,43 +81,62 @@ router.post('/forgot-password', (req, res) => {
     res.send({ message: 'Password reset link sent to your email' });
   });
 });
-router.post('/createpost',isLoggedIn,upload.single("postimage"), async function(req, res, next) {
-  const user = await userModel.findOne({username: req.session.passport.user});
-  const post = await postModel.create(
-    {
+
+router.post('/createpost', isLoggedIn, upload.single("postimage"), async function (req, res, next) {
+  const user = await userModel.findOne({ username: req.session.passport.user });
+
+  // Save file locally
+  const localFilePath = req.file.path;
+
+  // Upload file to Cloudinary
+  cloudinary.uploader.upload(localFilePath, { folder: 'uploads' }, async (error, result) => {
+    if (error) {
+      console.log("Cloudinary Error: ", error);
+      return res.status(500).send("Error uploading to Cloudinary");
+    }
+
+    // Create post with local and Cloudinary image URLs
+    const post = await postModel.create({
       user: user._id,
-      title:req.body.title,
-     description:req.body.description,
-     image:req.file.filename
-    }
-  )
-  user.posts.push(post._id);
-  await user.save();
-  res.redirect('/profile');
- 
+      title: req.body.title,
+      description: req.body.description,
+      image: req.file.filename, // Local file name
+      cloudinary_url: result.secure_url // Cloudinary URL
+    });
+
+    user.posts.push(post._id);
+    await user.save();
+
+    // Delete the local file if not needed anymore
+    fs.unlinkSync(localFilePath);
+
+    res.redirect('/profile');
+  });
 });
-router.post('/fileupload',isLoggedIn,upload.single("image"), async function(req, res, next) {
-  cloudinary.uploader.upload(req.file.path, function (err, result){
-    if(err) {
-      console.log(err);
-      return res.status(500).json({
-        success: false,
-        message: "Error"
-      })
+
+router.post('/fileupload', isLoggedIn, upload.single("image"), async function (req, res, next) {
+  const user = await userModel.findOne({ username: req.session.passport.user });
+
+  // Save file locally
+  const localFilePath = req.file.path;
+
+  // Upload file to Cloudinary
+  cloudinary.uploader.upload(localFilePath, { folder: 'uploads' }, async (error, result) => {
+    if (error) {
+      console.log("Cloudinary Error: ", error);
+      return res.status(500).send("Error uploading to Cloudinary");
     }
 
-    res.status(200).json({
-      success: true,
-      message:"Uploaded!",
-      data: result
-    })
-  })
-  const user = await userModel.findOne({username: req.session.passport.user});
-  user.profileImage = req.file.filename;
-  await user.save();
-  res.redirect('/profile');
- 
+    // Update user profile with local and Cloudinary image URLs
+    user.profileImage = req.file.filename; // Local file name
+    user.cloudinaryProfileImage = result.secure_url; // Cloudinary URL
+    await user.save();
 
+    // Delete the local file if not needed anymore
+    fs.unlinkSync(localFilePath);
+
+    res.redirect('/profile');
+  });
 });
 router.get('/logout',isLoggedIn,function(req,res,next){
   req.logout(function(err) {
