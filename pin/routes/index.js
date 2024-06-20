@@ -31,7 +31,6 @@ router.get('/feed',isLoggedIn, async function(req, res, next) {
   const posts = await postModel.find().populate("user");
   res.render('feed',{user,posts,navb:true});
  
-  res.render('profile',{user,navb:true});
 });
 router.get('/all/posts',isLoggedIn, async function(req, res, next) {
   const user = await userModel.findOne({username: req.session.passport.user}).populate("posts");
